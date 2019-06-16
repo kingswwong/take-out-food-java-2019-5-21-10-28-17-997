@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -14,7 +15,33 @@ public class App {
 
     public String bestCharge(List<String> inputs) {
         //TODO: write code here
-
-        return null;
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("============= 订餐明细 =============\n");
+        ArrayList<Item> items= new ArrayList<>();
+        ArrayList<Integer> nums = new ArrayList<>();
+        double sum = 0;
+        for(String msg: inputs){
+            String temp[] = devideInput(msg);
+            Item item = itemRepository.getItemById(temp[0]);
+            double price = item.getPrice() * Integer.parseInt(temp[1]);
+            for(int i = 0;i < Integer.parseInt(temp[1]);i++){
+                items.add(item);
+            }
+            sum += price;
+            stringBuilder.append(item.getName() + " x " + Integer.parseInt(temp[1]) + " = " + (int)(item.getPrice() * Integer.parseInt(temp[1])) + "元\n");
+        }
+        stringBuilder.append("-----------------------------------\n");
+        ArrayList arrayList = salesPromotionRepository.bestCharge(items,sum);
+        if(Integer.parseInt(arrayList.get(2).toString()) > 0){
+            stringBuilder.append("使用优惠:\n");
+            stringBuilder.append(arrayList.get(0).toString() + "，" + "省" +  arrayList.get(2).toString()+ "元\n");
+            stringBuilder.append("-----------------------------------\n");
+        }
+        stringBuilder.append("总计：" + arrayList.get(1).toString() + "元\n");
+        stringBuilder.append("===================================");
+        return stringBuilder.toString();
+    }
+    public static String[] devideInput(String input){
+        return input.split(" x ");
     }
 }
